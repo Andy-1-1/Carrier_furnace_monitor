@@ -1,0 +1,31 @@
+previous code
+void isr()
+{
+  if (digitalRead(FLIGHT) == HIGH)  // light went off
+  {
+    timeOff = millis();
+    digitalWrite(FLED, HIGH); // set furnace copy led off
+    digitalWrite(FFAIL, LOW); // set fail led on
+    onTime = timeOff - timeOn;
+    if (timeOn > FLASHMIN) {
+      if (onTime < FLASHSHORT) numShorts = numShorts + 1;
+      if (onTime > FLASHLONG)  numLongs = numLongs + 1;
+    }
+    lightOff = 1;
+  } 
+  else // light went on
+  {
+    timeOn = millis();
+    digitalWrite(FLED, LOW); // set furnace copy led on
+    offTime = timeOn - timeOff;
+    lightOn = 1;
+    if (offTime > FLASHPAUSE) {
+      if (furnaceCode > 0) lastCode = furnaceCode;
+      int tempCode =numShorts * 10 + numLongs;
+      if (tempCode >0) furnaceCode = tempCode; 
+      numShorts = 0;
+      numLongs = 0;
+      newCode = 1;
+    }
+  } 
+}
